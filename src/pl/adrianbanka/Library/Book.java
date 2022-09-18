@@ -8,4 +8,8 @@ public class Book {
     String publisher;
     String isbn;
 
+    void getInfo() {
+        System.out.println(title + author);
+    }
+
 }
