@@ -1,9 +1,10 @@
 package pl.adrianbanka.Library.App;
 
 public class LibraryApp {
+    public static final String APP_NAME = "Biblioteka v1.1";
+
     public static void main(String[] args) {
-        final String appName = "Biblioteka v.09";
-        System.out.println(appName);
+        System.out.println(APP_NAME);
 
         LibraryControl libraryControl = new LibraryControl();
         libraryControl.controlLoop();
