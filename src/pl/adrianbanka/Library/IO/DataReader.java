@@ -6,7 +6,18 @@ import pl.adrianbanka.Library.Model.Magazine;
 import java.util.Scanner;
 
 public class DataReader {
+
     private final Scanner sc = new Scanner(System.in);
+
+    public void close() {
+        sc.close();
+    }
+
+    public int getInt() {
+        int number = sc.nextInt();
+        sc.nextLine();
+        return number;
+    }
 
     public Book readAndCreateBook() {
         System.out.println("Tytuł: ");
@@ -14,14 +25,17 @@ public class DataReader {
         System.out.println("Autor: ");
         String author = sc.nextLine();
         System.out.println("Wydawnictwo: ");
-        System.out.println("ISBN: ");
-        int year = sc.nextInt();
-        System.out.println("Rok wydania: ");
         String publisher = sc.nextLine();
+        System.out.println("ISBN: ");
+        String isbn = sc.nextLine();
+        System.out.println("Rok wydania: ");
+        int releaseDate = getInt();
         System.out.println("Ilość stron: ");
         int pages = getInt();
-        return new Book(title, author, year, pages, publisher);
+
+        return new Book(title, author, releaseDate, pages, publisher, isbn);
     }
+
     public Magazine readAndCreateMagazine() {
         System.out.println("Tytuł: ");
         String title = sc.nextLine();
@@ -35,14 +49,7 @@ public class DataReader {
         int month = getInt();
         System.out.println("Dzień: ");
         int day = getInt();
-        return new Magazine(day, publisher, language, year, month, title);
-    }
-    public int getInt() {
-        int number = sc.nextInt();
-        sc.nextLine();
-        return number;
-    }
-    public void close() {
-        sc.close();
+
+        return new Magazine(title, publisher, language, year, month, day);
     }
 }
