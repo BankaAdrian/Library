@@ -1,7 +1,7 @@
 package pl.adrianbanka.Library.App;
 
 public class LibraryApp {
-    public static final String APP_NAME = "Biblioteka v1.5";
+    public static final String APP_NAME = "Biblioteka v1.8";
 
     public static void main(String[] args) {
         System.out.println(APP_NAME);

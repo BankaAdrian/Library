@@ -2,19 +2,36 @@ package pl.adrianbanka.Library.App;
 
 
 import pl.adrianbanka.Library.Exception.NoSuchOptionException;
+import pl.adrianbanka.Library.Exceptions.DataImportException;
 import pl.adrianbanka.Library.IO.ConsolePrinter;
 import pl.adrianbanka.Library.IO.DataReader;
+import pl.adrianbanka.Library.IO.File.FileManager;
+import pl.adrianbanka.Library.IO.File.FileManagerBuilder;
 import pl.adrianbanka.Library.Model.Book;
 import pl.adrianbanka.Library.Model.Library;
 import pl.adrianbanka.Library.Model.Magazine;
 import pl.adrianbanka.Library.Model.Publication;
 
+import java.io.IOException;
 import java.util.InputMismatchException;
 
 public class LibraryControl {
     private final ConsolePrinter printer = new ConsolePrinter();
     private final DataReader dataReader = new DataReader(printer);
-    private final Library library = new Library();
+    private Library library = new Library();
+    private FileManager fileManager;
+
+    LibraryControl() {
+        fileManager = new FileManagerBuilder(printer, dataReader).build();
+        try {
+            library = fileManager.importData();
+            printer.printLine("Zaimportowane dane z pliku");
+        } catch (DataImportException | IOException e) {
+            printer.printLine(e.getMessage());
+            printer.printLine("Zainicjowano nową bazę.");
+            library = new Library();
+        }
+    }
 
     public void controlLoop() {
         Option option;
@@ -89,8 +106,50 @@ public class LibraryControl {
     }
 
     private void exit() {
-        System.out.println("Koniec programu, papa!");
-        // zamykamy strumień wejścia
-        dataReader.close();
+        try {
+            fileManager.exportData(library);
+            printer.printLine("Eksport danych do pliku zakończony powodzeniem.");
+        } catch (DataImportException e) {
+            printer.printLine(e.getMessage());
+        }
+            printer.printLine("Koniec programu, papa!");
+            dataReader.close();
     }
+    private enum Option {
+        EXIT(0, "wyjście z programu"),
+        ADD_BOOK(1, "dodanie nowej książki"),
+        ADD_MAGAZINE(2, "dodanie nowego magazynu"),
+        PRINT_BOOKS(3, "wyświetl dostępne książki"),
+        PRINT_MAGAZINES(4, "wyświetl dostępne magazyny");
+
+        private final int value;
+        private final String description;
+
+        Option(int value, String description) {
+            this.value = value;
+            this.description = description;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        @Override
+        public String toString() {
+            return value + " - " + description;
+        }
+
+        static Option createForInt(int option) throws NoSuchOptionException {
+            try {
+                return Option.values()[option];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new NoSuchOptionException("Brak opcji o id" + option);
+            }
+        }
+    }
+
 }
