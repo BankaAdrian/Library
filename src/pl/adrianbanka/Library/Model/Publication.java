@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public abstract class Publication implements Serializable {
+
     private String title;
     private String publisher;
     private int year;
@@ -37,6 +38,8 @@ public abstract class Publication implements Serializable {
     void setPublisher(String publisher) {
         this.publisher = publisher;
     }
+
+    public abstract String toCsv();
 
     @Override
     public String toString() {

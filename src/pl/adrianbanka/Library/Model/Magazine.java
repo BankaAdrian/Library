@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class Magazine extends Publication {
 
+    public static final String TYPE = "Magazyn";
     private int month;
     private int day;
     private String language;
@@ -39,6 +40,18 @@ public class Magazine extends Publication {
                 + month + "-" + day + "; " + language;
         System.out.println(info);
     }
+
+    @Override
+    public String toCsv() {
+        return TYPE + ";" +
+                getTitle() + ";" +
+                getPublisher() + ";" +
+                getYear() + ";" +
+                month + ";" +
+                day + ";" +
+                language;
+    }
+
     @Override
     public String toString() {
         return super.toString() + month + "; " + day + "; " + language;
