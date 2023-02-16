@@ -10,11 +10,13 @@ import pl.adrianbanka.Library.IO.DataReader;
 import pl.adrianbanka.Library.IO.File.FileManager;
 import pl.adrianbanka.Library.IO.File.FileManagerBuilder;
 import pl.adrianbanka.Library.Model.Book;
+import pl.adrianbanka.Library.Model.Comparator.AlphabeticalComparator;
 import pl.adrianbanka.Library.Model.Library;
 import pl.adrianbanka.Library.Model.Magazine;
 import pl.adrianbanka.Library.Model.Publication;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
 class LibraryControl {
@@ -106,8 +108,14 @@ class LibraryControl {
     }
 
     private void printBooks() {
-        Publication[] publications = library.getPublications();
+        Publication[] publications = getSortedPublications();
         printer.printBooks(publications);
+    }
+
+    private Publication[] getSortedPublications() {
+        Publication[] publications = library.getPublications();
+        Arrays.sort(publications, new AlphabeticalComparator());
+        return publications;
     }
 
     private void addMagazine() {
@@ -122,7 +130,7 @@ class LibraryControl {
     }
 
     private void printMagazines() {
-        Publication[] publications = library.getPublications();
+        Publication[] publications = getSortedPublications();
         printer.printMagazines(publications);
     }
 
