@@ -6,8 +6,8 @@ import pl.adrianbanka.Library.Model.Magazine;
 import java.util.Scanner;
 
 public class DataReader {
-    private final Scanner sc = new Scanner(System.in);
-    private final ConsolePrinter printer;
+    private Scanner sc = new Scanner(System.in);
+    private ConsolePrinter printer;
 
     public DataReader(ConsolePrinter printer) {
         this.printer = printer;
@@ -23,6 +23,10 @@ public class DataReader {
         } finally {
             sc.nextLine();
         }
+    }
+
+    public String getString() {
+        return sc.nextLine();
     }
 
     public Book readAndCreateBook() {
@@ -58,7 +62,5 @@ public class DataReader {
 
         return new Magazine(title, publisher, language, year, month, day);
     }
-    public String getString() {
-        return sc.nextLine();
-    }
+
 }
