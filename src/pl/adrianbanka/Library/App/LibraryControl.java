@@ -5,18 +5,17 @@ import pl.adrianbanka.Library.Exception.NoSuchOptionException;
 import pl.adrianbanka.Library.Exceptions.DataExportException;
 import pl.adrianbanka.Library.Exceptions.DataImportException;
 import pl.adrianbanka.Library.Exceptions.InvalidDataException;
+import pl.adrianbanka.Library.Exceptions.UserAlreadyExistException;
 import pl.adrianbanka.Library.IO.ConsolePrinter;
 import pl.adrianbanka.Library.IO.DataReader;
 import pl.adrianbanka.Library.IO.File.FileManager;
 import pl.adrianbanka.Library.IO.File.FileManagerBuilder;
-import pl.adrianbanka.Library.Model.Book;
+import pl.adrianbanka.Library.Model.*;
 import pl.adrianbanka.Library.Model.Comparator.AlphabeticalComparator;
-import pl.adrianbanka.Library.Model.Library;
-import pl.adrianbanka.Library.Model.Magazine;
-import pl.adrianbanka.Library.Model.Publication;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.InputMismatchException;
 
 class LibraryControl {
@@ -26,12 +25,12 @@ class LibraryControl {
 
     private Library library;
 
-    LibraryControl() {
+    LibraryControl() throws IOException {
         fileManager = new FileManagerBuilder(printer, dataReader).build();
         try {
             library = fileManager.importData();
             printer.printLine("Zaimportowane dane z pliku");
-        } catch (DataImportException | InvalidDataException | IOException e) {
+        } catch (DataImportException | InvalidDataException e) {
             printer.printLine(e.getMessage());
             printer.printLine("Zainicjowano nową bazę.");
             library = new Library();
@@ -62,6 +61,12 @@ class LibraryControl {
                     break;
                 case DELETE_MAGAZINE:
                     deleteMagazine();
+                    break;
+                case ADD_USER: //dodano
+                    addUser();
+                    break;
+                case PRINT_USERS: //dodano
+                    printUsers();
                     break;
                 case EXIT:
                     exit();
@@ -107,17 +112,6 @@ class LibraryControl {
         }
     }
 
-    private void printBooks() {
-        Publication[] publications = getSortedPublications();
-        printer.printBooks(publications);
-    }
-
-    private Publication[] getSortedPublications() {
-        Publication[] publications = library.getPublications();
-        Arrays.sort(publications, new AlphabeticalComparator());
-        return publications;
-    }
-
     private void addMagazine() {
         try {
             Magazine magazine = dataReader.readAndCreateMagazine();
@@ -129,9 +123,29 @@ class LibraryControl {
         }
     }
 
+    //dodano
+    private void addUser() {
+        LibraryUser libraryUser = dataReader.createLibraryUser();
+        try {
+            library.addUser(libraryUser);
+        } catch (UserAlreadyExistException e) {
+            printer.printLine(e.getMessage());
+        }
+    }
+
+    //zmiana logiki
+    private void printBooks() {
+        printer.printBooks(library.getPublications().values());
+    }
+
+    //zmiana logiki
     private void printMagazines() {
-        Publication[] publications = getSortedPublications();
-        printer.printMagazines(publications);
+        printer.printMagazines(library.getPublications().values());
+    }
+
+    //dodano
+    private void printUsers() {
+        printer.prinstUsers(library.getUsers().values());
     }
 
     private void deleteMagazine() {
@@ -172,11 +186,13 @@ class LibraryControl {
     private enum Option {
         EXIT(0, "Wyjście z programu"),
         ADD_BOOK(1, "Dodanie książki"),
-        ADD_MAGAZINE(2,"Dodanie magazynu/gazety"),
+        ADD_MAGAZINE(2, "Dodanie magazynu/gazety"),
         PRINT_BOOKS(3, "Wyświetlenie dostępnych książek"),
         PRINT_MAGAZINES(4, "Wyświetlenie dostępnych magazynów/gazet"),
         DELETE_BOOK(5, "Usuń książkę"),
-        DELETE_MAGAZINE(6, "Usuń magazyn");
+        DELETE_MAGAZINE(6, "Usuń magazyn"),
+        ADD_USER(7, "Dodaj czytelnika"), //dodano
+        PRINT_USERS(8, "Wyświetl czytelników"); //dodano
 
         private int value;
         private String description;
@@ -194,7 +210,7 @@ class LibraryControl {
         static Option createFromInt(int option) throws NoSuchOptionException {
             try {
                 return Option.values()[option];
-            } catch(ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException e) {
                 throw new NoSuchOptionException("Brak opcji o id " + option);
             }
         }
