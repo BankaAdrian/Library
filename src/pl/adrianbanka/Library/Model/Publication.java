@@ -3,7 +3,7 @@ package pl.adrianbanka.Library.Model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Publication implements Serializable, Comparable<Publication> {
+public abstract class Publication implements Serializable, Comparable<Publication>, CsvConvertable {
 
     private String title;
     private String publisher;

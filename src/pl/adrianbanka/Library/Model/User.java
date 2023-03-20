@@ -3,7 +3,7 @@ package pl.adrianbanka.Library.Model;
 import java.io.Serializable;
 import java.util.Objects;
 
-abstract class User implements Serializable {
+abstract class User implements Serializable, CsvConvertable {
     private String firstName;
     private String lastName;
     private String pesel;
