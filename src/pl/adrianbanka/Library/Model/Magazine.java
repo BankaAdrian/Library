@@ -70,4 +70,5 @@ public class Magazine extends Publication {
     public int hashCode() {
         return Objects.hash(super.hashCode(), month, day, language);
     }
+
 }

@@ -4,9 +4,7 @@ import pl.adrianbanka.Library.Exceptions.PublicationAlreadyExistException;
 import pl.adrianbanka.Library.Exceptions.UserAlreadyExistException;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Library implements Serializable {
     private Map<String, Publication> publications = new HashMap<>();
@@ -16,27 +14,41 @@ public class Library implements Serializable {
         return publications;
     }
 
+    public Collection<Publication> getSortedPublications(Comparator<Publication> comparator) {
+        ArrayList<Publication> list = new ArrayList<>(this.publications.values());
+        list.sort(comparator);
+        return list;
+    }
+
     public Map<String, LibraryUser> getUsers() {
         return users;
     }
 
-    public void addPublication(Publication publication) {
-        if (publications.containsKey(publication.getTitle())) {
-            throw new PublicationAlreadyExistException("Publikacja o taki tytule już istnieje " + publication.getTitle());
-        }
-        publications.put(publication.getTitle(), publication);
+    public Collection<LibraryUser> getSortedUsers(Comparator<LibraryUser> comparator) {
+        ArrayList<LibraryUser> list = new ArrayList<>(this.users.values());
+        list.sort(comparator);
+        return list;
     }
 
     public void addUser(LibraryUser user) {
-        if (users.containsKey(user.getPesel())) {
-            throw new UserAlreadyExistException("Użytkownik już istnieje.");
-        }
+        if(users.containsKey(user.getPesel()))
+            throw new UserAlreadyExistException(
+                    "Użytkownik ze wskazanym peselem już istnieje " + user.getPesel()
+            );
         users.put(user.getPesel(), user);
     }
 
-    public boolean removePublication(Publication pub) {
-        if (publications.containsValue(pub)) {
-            publications.remove(pub.getTitle());
+    public void addPublication(Publication publication) {
+        if(publications.containsKey(publication.getTitle()))
+            throw new PublicationAlreadyExistException(
+                    "Publikacja o takim tytule już istnieje " + publication.getTitle()
+            );
+        publications.put(publication.getTitle(), publication);
+    }
+
+    public boolean removePublication(Publication publication) {
+        if(publications.containsValue(publication)) {
+            publications.remove(publication.getTitle());
             return true;
         } else {
             return false;

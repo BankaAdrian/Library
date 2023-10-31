@@ -31,7 +31,6 @@ public class CsvFileManager implements FileManager {
         Collection<Publication> publications = library.getPublications().values();
         exportToCsv(publications, PUBLICATIONS_FILE_NAME);
         }
-    }
 
     private void exportUsers(Library library) {
         Collection<LibraryUser> users = library.getUsers().values();
